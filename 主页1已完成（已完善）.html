@@ -1,0 +1,294 @@
+<html>
+    <head>
+        <title>主页</title>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text-align" href="css/主页.css" />
+        <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=0.3, maxmum-scale=1.0, minimum-scale=0.3 maximum-scale=5.0">
+    </head>
+    <style>
+            canvas {
+            display: block;
+            margin: 0 auto;
+        }
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        a {
+            font-size: 40px;
+            color: rgb(255, 145, 0);
+            position: relative;
+            top: -40px; /* 向上移动10px */
+        }
+        h1 {
+            font-size: 80px;
+            color: rgb(255, 145, 0);
+            text-shadow: 2px 2px 2px rgb(0, 0, 0);
+            position: relative;
+            top: -5px; /* 向上移动10px */
+        }
+        #bordered1 {
+            border: 2px solid black; /* 2px宽，实线，黑色 */
+            width: 450px;
+            height: 450px;
+            background-color: rgb(255, 255, 255);
+            position: absolute;
+            top: 28%; /* 调整此值以使图片在居中中间的上方与居中之间 */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: border-animation-1 4s infinite;
+        }
+        @keyframes border-animation-1 {
+            0% {
+            box-shadow: 0 0 10px 2px rgb(196, 132, 132);
+            }
+            25% {
+            box-shadow: 0 0 10px 2px rgb(0, 255, 60);
+            }
+            50% {
+            box-shadow: 0 0 10px 2px rgb(0, 123, 255);
+            }
+            75% {
+            box-shadow: 0 0 10px 2px rgb(191, 0, 255);
+            }
+            100% {
+            box-shadow: 0 0 10px 2px rgb(255, 0, 162);
+            }
+        }
+        #bordered3 {
+            border: 2px solid rgb(0, 0, 0); /* 2px宽，实线，黑色 */
+            height: 550px;
+            position: absolute;
+            top: 41%;
+            left: 29%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%; /* 圆形 */
+            animation: rotate 13s linear infinite, border-animation-2 5s infinite; /* 添加旋转动画和边框动画 */
+        }
+        @keyframes border-animation-2 {
+            0% {
+            border-color: rgb(0, 217, 255);
+            }
+            25% {
+            border-color: orange;
+            }
+            50% {
+            border-color: rgb(255, 0, 43);
+            }
+            75% {
+            border-color: rgb(247, 0, 255);
+            }
+            100% {
+            border-color: rgb(255, 132, 0);
+            }
+        }
+        @keyframes rotate {
+            from {
+            transform: rotate(0deg);
+            }
+            to {
+            transform: rotate(360deg);
+            }
+        }
+        #bordered2 {
+            border: 2px solid black; /* 2px宽，实线，黑色 */
+            width: 450px;
+            height: 450px;
+            background-color: rgb(255, 255, 255);
+            position: absolute;
+            top: 72%; /* 调整此值以使图片在居中中间与最下方之间居中 */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: border-animation-3 4s infinite;
+        }
+        @keyframes border-animation-3 {
+            0% {
+            box-shadow: 0 0 10px 2px rgb(0, 179, 255);
+            }
+            25% {
+            box-shadow: 0 0 10px 2px rgb(255, 0, 179);
+            }
+            50% {
+            box-shadow: 0 0 10px 2px rgb(255, 0, 0);
+            }
+            75% {
+            box-shadow: 0 0 10px 2px rgb(170, 255, 0);
+            }
+            100% {
+            box-shadow: 0 0 10px 2px rgb(0, 60, 255);
+            }
+        }
+        #style1 { /* 查看我的信息 */
+            transform: scale(2.0); /* 调整文字大小 */
+            position: absolute;
+            top: 90%; /* 调整此值以使文字在最下方的中间与居中中间之间 */
+            left: 50%;
+            transform: translate(-50%, -50%) scale(2.0);
+            text-align: center;
+        }
+        #style2 { /* 欢迎来到我的主页 */
+            position: absolute;
+            top: 8%; /* 调整此值以使文字在最上方的中间与居中中间之间 */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            font-size: 60px; /* 调整文字大小 */
+            color: rgb(255, 98, 0); /* 调整颜色为白色 */
+        }
+        #style3 { /* 我的 */
+            position: absolute;
+            top: 18%; /* 调整此值以使文字在最上方的中间与居中中间之间 */
+            left: 50%;
+            transform: translate(-50%, -50%) scale(2.0);
+            text-align: center;
+            font-size: 80px; /* 调整文字大小 */
+            color: rgb(255, 213, 0); /* 调整颜色为白色 */
+        }
+    </style>
+    <body> 
+        <div class="bd">
+            <canvas id="galaxy"></canvas>
+            <script>
+                const canvas = document.getElementById('galaxy');
+                const ctx = canvas.getContext('2d');
+                
+                // 设置画布尺寸
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+
+                // 粒子配置
+                const particles = [];
+                const particleCount = 3000;
+                const maxSpeed = 1.0; // 增加速度
+                const starColors = ['#4BA3C3', '#BAFF29', '#E56399', '#FFFFFF'];
+
+                // 创建粒子
+                class Particle {
+                    constructor() {
+                        this.reset();
+                    }
+
+                    reset() {
+                        this.angle = Math.random() * Math.PI * 2;
+                        this.radius = Math.random() * canvas.width * 3; // 放大3倍
+                        this.speed = (Math.random() * maxSpeed + 0.1) / 100;
+                        this.size = Math.random() * 1.5 * 3; // 缩小粒子大小
+                        this.color = starColors[Math.floor(Math.random() * starColors.length)];
+                    }
+
+                    update() {
+                        this.angle += this.speed;
+                        this.x = canvas.width / 2 + Math.cos(this.angle) * this.radius;
+                        this.y = canvas.height / 2 + Math.sin(this.angle) * this.radius;
+                        this.radius -= 0.2 * 3;  // 放大3倍
+
+                        if (this.radius < 0) this.reset();
+                    }
+                }
+
+                // 初始化粒子
+                for(let i = 0; i < particleCount; i++) {
+                    particles.push(new Particle());
+                }
+
+                // 动画循环
+                function animate() {
+                    // 设置更淡的粉色背景
+                    ctx.fillStyle = 'rgba(255, 182, 193, 0.05)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    particles.forEach(particle => {
+                        particle.update();
+                        ctx.beginPath();
+                        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                        ctx.fillStyle = particle.color;
+                        ctx.fill();
+                    });
+
+                    requestAnimationFrame(animate);
+                }
+
+                animate();
+
+                // 窗口调整事件
+                window.addEventListener('resize', () => {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                });
+            </script>
+            <script>
+                window.onload = function() {
+                    // 创建音频元素
+                    var audio = document.createElement('audio');
+                    audio.id = 'myAudio';
+                    document.body.appendChild(audio);
+
+                    // 设置音频源
+                    var audioSources = [
+                        'https://a.xmcdn.com/storages/a58d-audiofreehighqps/0E/AB/GKwRIRwLOIXMABs-IwNC5loF.m4a?sign=13cf43e6a0eb77503aa9611ef590d81f&buy_key=www2_22d79c7b-36549529:0&timestamp=1743243830293000&token=6237&duration=292', // 原路径
+                        'https://example.com/backup-audio.mp3' // 替代路径
+                    ];
+                    var currentSourceIndex = 0;
+                    audio.src = audioSources[currentSourceIndex];
+
+                    // 设置播放起始时间（单位：秒）
+                    const startTime = 75; // 从75秒（75秒）开始播放
+
+                    // 监听音频播放结束事件，重新播放并从头开始
+                    audio.addEventListener('ended', function() {
+                        audio.currentTime = 75; // 从头开始播放
+                        audio.play();
+                    });
+
+                    // 监听音频元数据加载完成事件
+                    audio.addEventListener('loadedmetadata', function() {
+                        // 设置起始播放位置
+                        audio.currentTime = startTime;
+                    });
+
+                    // 延迟1秒后开始播放
+                    setTimeout(function() {
+                        var playPromise = audio.play();
+                        if (playPromise !== undefined) {
+                            playPromise.catch(error => {
+                                console.log('自动播放被阻止或路径无效，尝试切换路径');
+                                if (currentSourceIndex < audioSources.length - 1) {
+                                    currentSourceIndex++;
+                                    audio.src = audioSources[currentSourceIndex];
+                                    audio.load();
+                                    audio.play().catch(err => {
+                                        console.log('仍无法播放，请检查音频路径');
+                                    });
+                                } else {
+                                    console.log('所有路径均无效，请检查音频文件');
+                                }
+                            });
+                        }
+                    }, 1000); // 延迟1秒执行
+                }
+            </script>
+            </script>
+            <div id="style2">
+                <h2> 欢 迎 来 到 我 的 主 页 </h2>
+            </div>
+            <div style="text-align: center;" style="color: rgb(0, 0, 0);" id="style3">
+                <a href="待放入" style="text-decoration: none;">我的</a>
+                </div>
+                    <div class="bordered" id="bordered1">
+                    <img src="https://s21.ax1x.com/2025/03/28/pErdZSf.jpg" alt="图片" style="width: 100%; height: 100%;">
+                    <h1 style="position: absolute; top: 65%; left: 92%; transform: translate(-50%, 0);">我</h1>
+                    </div>
+                    <div class="bordered">
+                        <img src="https://s21.ax1x.com/2025/03/28/pErauI1.jpg" alt="图片"  id="bordered3">
+                    </div>
+                    <div class="bordered" id="bordered2">
+                        <img src="https://s21.ax1x.com/2025/03/28/pErdel8.jpg" alt="图片" style="width: 100%; height: 100%;">
+                        <h1 style="position: absolute; top: 42%; left: 90%; transform: translate(-50%, 0);">宝宝</h1>
+                    </div>
+                        <div style="text-align: center; color: rgb(0, 0, 0);" id="style1">
+                            <a href="http://127.0.0.1:3000/待完成代码/爱心(待完善).html" style="text-decoration: none;"> 查 看 我 的 信 息 和 喜 欢 </a>
+                        </div>
+                 </div>
+
+    </body>
+</html>
